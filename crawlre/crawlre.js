@@ -14,7 +14,7 @@ const EventEmitter = require('events');
 
   function collectInternalLinks($) {
       var relativeLinks = $("a[href^='/']");
-      console.log("Found " + relativeLinks.length + " relative links on page");
+      //console.log("Found " + relativeLinks.length + " relative links on page");
       relativeLinks.each(function() {
           pagesToVisit.push(baseUrl + $(this).attr('href'));
       });
@@ -24,9 +24,6 @@ const EventEmitter = require('events');
 module.exports.execute = execute;
 
   async function execute(_category, _url,_id){
-
-    const myEE = new EventEmitter();
-
 
     var category = _category;
     var idCounter = _id;
@@ -39,9 +36,9 @@ module.exports.execute = execute;
     var no_more_article = false;
     const MAX_PAGES_TO_VISIT = 10;
 
-    console.log(idCounter);
+    //console.log(idCounter);
     pagesToVisit.push(url);
-    console.log(pagesToVisit);
+    //console.log(pagesToVisit);
     //const asyncFunction = util.promisify(crawl());
 
 
@@ -63,12 +60,12 @@ module.exports.execute = execute;
 
       //var category = category;
       if(pagesToVisit.length==0){
-        console.log("no page to visit");
+        //console.log("no page to visit");
           return;
 
       }
       if(numPagesVisited >= MAX_PAGES_TO_VISIT) {
-        console.log("Reached max limit of number of pages to visit.");
+        //console.log("Reached max limit of number of pages to visit.");
         return Promise.resolve(article_array);
       }
       var nextPage = pagesToVisit.pop();
@@ -79,7 +76,7 @@ module.exports.execute = execute;
         // New page we haven't visited
         await visitPage(nextPage).then(async function(data){
           await getData(data,crawl);
-          console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>");
+          //console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>");
         });
 
 
@@ -89,7 +86,7 @@ module.exports.execute = execute;
       return  await crawl(pages);
 
 
-      console.log("hhhhhhhhhhhhhhh");
+      //console.log("hhhhhhhhhhhhhhh");
 //       return new Promise(function(resolve,reject){
 //         console.log(pagesToVisit.length, numPagesVisited);
 //         if(pagesToVisit.length==0 && numPagesVisited>1){
@@ -105,14 +102,14 @@ module.exports.execute = execute;
       // Add page to our set
       pagesVisited[url] = true;
       numPagesVisited++;
-      console.log(category);
+      //console.log(category);
 
       // Make the request
       return new Promise(function(resolve, reject){
         console.log("Visiting page " + url);
         request(url, function(error, response, body) {
            // Check status code (200 is HTTP OK)
-           console.log("Status code: " + response.statusCode);
+           //console.log("Status code: " + response.statusCode);
            if(response.statusCode !== 200) {
              callback();
               reject(error);
@@ -130,14 +127,14 @@ module.exports.execute = execute;
            if(numPagesVisited==1){
              var highlight = $('.td_block_inner').first().children();
              highlight.find('a').each(function(i,item){
-               //console.log($(this).attr('href'));
+               ////console.log($(this).attr('href'));
                var href = $(this).attr('href');
                if(!(pagesToVisit.includes(href))){
                  pagesToVisit.push(href);
                }
              });
            }else{
-             console.log(numPagesVisited);
+             //console.log(numPagesVisited);
       var article_content=[];
       $('.td-post-content p').each(function(i,item){
         //console.log(item);
@@ -158,10 +155,10 @@ module.exports.execute = execute;
              article_array.push(article);
 
            }
-           console.log(pagesToVisit);
+           //console.log(pagesToVisit);
 
             //callback();
-           console.log("i'm here");
+           //console.log("i'm here");
            return new Promise(function (resolve, reject){
              resolve('ok');
            })
@@ -172,11 +169,11 @@ module.exports.execute = execute;
     //     resolve(data);
     //   })
     // }
-console.log("//////////////////////")
+//console.log("//////////////////////")
     var result =   await crawl(pagesToVisit);
     //myEE.on('foo', () => console.log('a'));
 
-    console.log("aaaaaaaaaaa");
+    //console.log("aaaaaaaaaaa");
 
     return article_array
 
