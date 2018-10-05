@@ -56,15 +56,15 @@ async function execute(_category, _url,last_url) {
       crawl(pages);
     } else {
       // New page we haven't visited
-      await visitPage(nextPage).then(async function(data) {
-        var result = await getData(data, crawl);
+      await makeRequest(nextPage).then(async function(data) {
+        var result = await getUrlAndData(data, crawl);
       });
     }
     return await crawl(pages);
   }
 
 
-  function visitPage(url, _callback) {
+  function makeRequest(url, _callback) {
     // Add page to our set
     pagesVisited[url] = true;
     numPagesVisited++;
@@ -88,7 +88,7 @@ async function execute(_category, _url,last_url) {
   }
 
 
-  function getData(body, callback) {
+  function getUrlAndData(body, callback) {
     // Parse the document body
     var $ = cheerio.load(body);
     if (numPagesVisited == 1) {

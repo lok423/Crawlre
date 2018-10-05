@@ -15,10 +15,15 @@ console.time("read file");
 var file = fs.readFileSync('last_page.json', 'utf8');
 //var article_file = fs.readFileSync('last_page.json', 'utf8');
 // var content =  JSON.parse(article_file);
-var article_content=null;
+// var article_content=null;
 fs.readFile('articles.json', function (err, data) {
     article_content = JSON.parse(data);
-})
+    var total =0;
+    for(var i=0;i<article_content.length;i++){
+      total +=article_content[i].length;
+    }
+    console.log(total);
+});
 console.timeEnd("read file");
 
 
@@ -49,22 +54,35 @@ function scheduleCronstyle(){
     });
 }
 
-//scheduleCronstyle();
+scheduleCronstyle();
 
-(async()=>{
-  var last_url = JSON.parse(file);
-  await crawlEducationCentral(last_url);
-  console.log("end");
-  //run Python
-  // PythonShell.run('./test.py', null, function (err, data) {
-  //     if (err) console.log(err);
-  //     console.log(data.toString())
-  //   });
-  // var test = new PythonShell('test.py', options);
-  // test.on('message', function(message){
-  //   console.log(message);
-  // });
-})();
+
+
+
+// (async()=>{
+// console.time("total time");
+//   var last_url = JSON.parse(file);
+//   // for(var num=4;num>1;num--){
+//   //   console.log(num);
+//   //   //console.log(News_URL+num+'/');
+//   //   await crawlEducationCentral(last_url,num);
+//   //
+//   // }
+//   //await crawlEducationCentral(last_url);
+//
+//   console.log("end");
+//   //run Python
+//   // PythonShell.run('./test.py', null, function (err, data) {
+//   //     if (err) console.log(err);
+//   //     console.log(data.toString())
+//   //   });
+//   // var test = new PythonShell('test.py', options);
+//   // test.on('message', function(message){
+//   //   console.log(message);
+//   // });
+//   console.timeEnd("total time");
+//
+// })();
 
 
 
@@ -77,18 +95,28 @@ function scheduleCronstyle(){
   var sectors =  Crawlre.execute('sectors',Sectors_URL,last_url);
     var future =  Crawlre.execute('future',Future_URL,last_url);
   await Promise.all([news,features,opinion,teaching,sectors,future]).then(function(values) {
+    //console.log(values);
     console.timeEnd("crawl");
     console.log("processing data");
-    for (var i=0;i<values.length;i++){
-      if(values[i]){
-        console.log("push index: ",i,", ",values[i].length, "articles");
-        for(var j=0;j<values[i].length;j++){
-          article_content[i].push(values[i][j]);
-        }
-      }
+    var article_file = fs.readFileSync('articles.json', 'utf8');
+    //console.log("is empty?", article_file);
+    if(article_file ==""){
+      let data = JSON.stringify(values);
+      fs.writeFileSync('articles.json', data);
+    }else{
+      var article_content =  JSON.parse(article_file);
+     for (var i=0;i<values.length;i++){
+       if(values[i]){
+         console.log("push index: ",i,", ",values[i].length, "articles");
+         for(var j=0;j<values[i].length;j++){
+           article_content[i].push(values[i][j]);
+         }
+       }
+     }
+     let data = JSON.stringify(article_content);
+     fs.writeFileSync('articles.json', data);
     }
-    let data = JSON.stringify(article_content);
-    fs.writeFileSync('articles.json', data);
+
 
   });
   console.log("finished processing");
