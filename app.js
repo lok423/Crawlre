@@ -41,16 +41,16 @@ function scheduleCronstyle(){
      //schedule.scheduleJob('1-10 * * * * *', function(){
         console.log('scheduleCronstyle:' + new Date());
         (async()=>{
-          //var last_url = JSON.parse(file);
-          //await crawlEducationCentral(last_url);
-          PythonShell.run('./test.py', null, function (err, data) {
-              if (err) console.log(err);
-              //console.log(data.toString())
-            });
-          var test = new PythonShell('test.py', options);
-          test.on('message', function(message){
-            console.log(message);
-          });
+          var last_url = JSON.parse(file);
+          await crawlEducationCentral(last_url);
+          // PythonShell.run('./test.py', null, function (err, data) {
+          //     if (err) console.log(err);
+          //     //console.log(data.toString())
+          //   });
+          // var test = new PythonShell('test.py', options);
+          // test.on('message', function(message){
+          //   console.log(message);
+          // });
         })();
     // });
 }
